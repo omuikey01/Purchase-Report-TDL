@@ -1,0 +1,160 @@
+[#Field :   VCH BilledQty]
+    Set as  :   "Numbers "
+    
+[#Line  : EI InvInfo]
+    Add     :   Right Field   :   After   :   VCH BilledQty       :       GoSubForm
+    
+[Field  :   GoSubForm]
+    Sub Form    :   Purchase Sub Quntity
+    
+
+[Report :   Purchase Sub Quntity]
+    
+    Form        :   Purchase Sub Quntity
+    Set         :   cnt         :   0   
+    Set         :   ItemQtyOwn  :   0
+    
+        [Form   :   Purchase Sub Quntity]
+            
+            Part    :   PSQ P1, PSQ Title P2
+            Width   :   80% Screen
+            Height  :   70% Screen
+
+            
+                [Part   :   PSQ P1]
+                        
+                    Line    :   PSQ P1
+                    Space Bottom    : 1
+                    
+                        [Line   :  PSQ P1]
+                            
+                            Field   :   PSQ P1
+                            
+                                [Field  :   PSQ P1]
+                                         
+                                         Type   :   String
+                                        ;Info    :   $BilledQty
+                                        Info    :  $StockItemName
+                                        Align   :   Center  
+                                        Style   :   Normal Bold
+                                        Width   :   80% Screen
+                                        
+                [Part   :   PSQ Title P2]
+                    
+                    Line    :   PSQ Title P2 ln1, PSQ Title P2 ln2
+                    Repeat      :   PSQ Title P2 ln2    :   ItemQtyOwn  ;;  For Repeat Line
+                    Scroll      :   Vertical
+                    Break On    :   ##ItemQtyOwn > $BilledQty   ;;  Check the Condition and break this line which is repeateting
+                    
+                    [Line    :   PSQ Title P2 ln1]
+
+                        Field   :  PSQ ItemSizeTitle ln1 fld1, PSQ ItemQtyTitle ln1 fld2, PSQ ItemMrpTitle ln1 fld3, PSQ ItemSalePriceTitle ln1 fld4, PSQ ItemBcnTitle ln1 fld5
+                            
+                            Space Top       : 0.5
+                            Space Bottom    : 0.5
+                            Border          :   Thin Top Bottom
+                        
+                            Local       :   Field   :   Default     :   Width   :   20% Screen
+                            Local       :   Field   :   Default     :   Style   :   Normal Bold
+                            
+                            [Field      :   PSQ ItemSizeTitle ln1 fld1]
+                             
+                                Info    :   "Size"
+                                
+                            [Field      :   PSQ ItemQtyTitle ln1 fld2]
+                             
+                                Info    :   "Quntity"
+                                
+                            [Field      :   PSQ ItemMrpTitle ln1 fld3]
+                             
+                                Info    :   "MRP"
+                                
+                            [Field      :   PSQ ItemSalePriceTitle ln1 fld4]
+                             
+                                Info    :   "Sale Price"
+                                
+                            [Field      :   PSQ ItemBcnTitle ln1 fld5]
+                             
+                                Info    :   "BCN"
+                                
+                    
+                    [Line   :   PSQ Title P2 ln2]
+                        
+                        Field   :   PSQ Data P3 fld11, PSQ Data P3 fld12, PSQ Data P3 fld13, PSQ Data P3 fld14, PSQ Data P3 fld15, PSQ Data P3 fld16
+                            
+                        Local   :   Field   :   Default     :   Width   :   20% Screen
+                        Local   :   Field   :   Default     :   Max     :   5
+                            
+                            [Field      :   PSQ Data P3 fld11]
+                                
+                                Type        :   String              
+                                Storage     :   ItemSize
+                                
+                            [Field      :   PSQ Data P3 fld12]
+                              
+                                Type        :   Number
+                                Storage     :   cnt
+                                Modifies    :   cnt : Yes
+                                ;;Control     :   QunritiDonw : ##ItemQtyOwn + ##cnt > $BilledQty
+                                                        
+                            [Field      :   PSQ Data P3 fld13]
+                                
+                                Type        :   Number                              
+                                Storage     :   ItemMRP
+                                
+                            [Field      :   PSQ Data P3 fld14]
+                                
+                                Type        :   Number
+                                Storage     :   ItemSP
+                                
+                            [Field      :   PSQ Data P3 fld15]
+                               
+                                Type        :   Number
+                                Set as      :   ##ItemBCN + 1
+                                Modifies    :   ItemBCN : Yes
+                                Skip        :   Yes
+                               
+                            [Field      :   PSQ Data P3 fld16]
+                                
+                                Info : ##ItemQtyOwn + ##cnt
+                                Modifies      :   ItemQtyOwn : Yes
+                                
+                                
+                                
+
+[System : UDF]
+    ItemSize        :   String  :   20001
+    ItemQtyOwn      :   Number  :   20002
+    
+
+;; System Variables of Items Store
+[System :   Variable ]
+    ItemQtyOwn  :   0
+    ItemBCN     :   1000
+    cnt         :   0
+
+    
+
+ ;;Variables for Store the data of user Enter
+[Variable   :   ItemSize ]
+    Type        :   String    
+    Set Always  : Yes
+ 
+[Variable   :   ItemQtyOwn ]
+    Type    :   Number
+    
+[Variable   :   ItemMRP ]
+    Type    :   Number  
+    
+[Variable   :   ItemSP ]
+    Type    :   Number  
+
+[Variable   :   ItemBCN ]
+    Type    :   Number  
+    Persist :   Yes
+    
+[Variable   :   cnt]
+    Type    :   Number
+    
+[System :   Formula]
+    QunritiDonw :   "U Have Entred More Quntity please take out some quntity"
